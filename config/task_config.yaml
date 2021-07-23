@@ -1,0 +1,15 @@
+random_seed:
+  value: true
+  description: "Seed for random value"
+
+lr:
+  value: 0.01
+  description: "Learning rate"
+
+n_hidden_dim:
+  value: 16
+  description: "Number of hidden units"
+
+epochs:
+  value: 200
+  description: "Total number of epochs"
