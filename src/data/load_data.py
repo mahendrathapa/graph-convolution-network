@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from loguru import logger
 from scipy.sparse import coo_matrix
 
 
@@ -12,7 +13,7 @@ def encode_onehot(labels):
 
 def load_cora_data(data_path):
 
-    print("Loading Cora dataset")
+    logger.info("Loading Cora dataset")
 
     idx_features_labels = np.genfromtxt(f"{str(data_path)}/cora.content", dtype=np.dtype(str))
     features = np.array(idx_features_labels[:, 1: -1], dtype=np.float32)

@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
+from loguru import logger
 from src.constant import CORA_DATA_PATH
 from src.data.load_data import load_cora_data
 from src.evaluation.evaluation import accuracy
@@ -29,14 +30,12 @@ class CoraNodeClassification:
             loss_train, acc_train = self.train(features, adj, labels, idx_train)
             loss_val, acc_val = self.val(features, adj, labels, idx_val)
 
-            print(f"Epoch: {epoch}",
-                  f"Train Loss: {loss_train}",
-                  f"Train Acc: {acc_train}",
-                  f"Val Loss: {loss_val}",
-                  f"Val Acc: {acc_val}")
+            logger.info(f"Epoch: {epoch}")
+            logger.info(f"Train Loss: {loss_train} Train Acc: {acc_train}")
+            logger.info(f"Val Loss: {loss_val} Val Acc: {acc_val}\n")
 
         loss_test, acc_test = self.test(features, adj, labels, idx_test)
-        print(f"Test Loss: {loss_test} Test Acc: {acc_test}")
+        logger.info(f"Test Loss: {loss_test} Test Acc: {acc_test}")
 
     def train(self, features, adj, labels, idx_train):
         self.model.train()
