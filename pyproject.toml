@@ -12,6 +12,7 @@ numpy = "^1.21.0"
 scipy = "^1.7.0"
 PyYAML = "^5.4.1"
 loguru = "^0.5.3"
+dynaconf = "^3.1.4"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"
