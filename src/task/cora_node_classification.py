@@ -1,8 +1,10 @@
+import neptune.new as neptune
 import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
 from loguru import logger
+from src.config.project_config import settings
 from src.constant import CORA_DATA_PATH
 from src.data.load_data import load_cora_data
 from src.evaluation.evaluation import accuracy
@@ -17,6 +19,12 @@ class CoraNodeClassification:
         np.random.seed(config.random_seed)
         torch.manual_seed(config.random_seed)
 
+        self.neptune = neptune.init(
+            project=settings.NEPTUNE_PROJECT_NAME,
+            api_token=settings.NEPTUNE_API_TOKEN)
+
+        self.neptune["config"] = self.config.__dict__
+
     def run(self):
         adj, features, labels, idx_train, idx_val, idx_test = load_cora_data(CORA_DATA_PATH)
 
@@ -30,12 +38,20 @@ class CoraNodeClassification:
             loss_train, acc_train = self.train(features, adj, labels, idx_train)
             loss_val, acc_val = self.val(features, adj, labels, idx_val)
 
-            logger.info(f"Epoch: {epoch}")
-            logger.info(f"Train Loss: {loss_train} Train Acc: {acc_train}")
-            logger.info(f"Val Loss: {loss_val} Val Acc: {acc_val}\n")
+            self.neptune["train_loss"].log(loss_train)
+            self.neptune["train_accuracy"].log(acc_train)
+            self.neptune["val_loss"].log(loss_val)
+            self.neptune["val_accuracy"].log(acc_val)
+
+            if epoch % self.config.display_intervals == 0:
+                logger.info(f"Epoch: {epoch}")
+                logger.info(f"Train Loss: {loss_train} Train Acc: {acc_train}")
+                logger.info(f"Val Loss: {loss_val} Val Acc: {acc_val}\n")
 
         loss_test, acc_test = self.test(features, adj, labels, idx_test)
         logger.info(f"Test Loss: {loss_test} Test Acc: {acc_test}")
+        self.neptune["test_loss"] = loss_test
+        self.neptune["test_accuracy"] = acc_test
 
     def train(self, features, adj, labels, idx_train):
         self.model.train()

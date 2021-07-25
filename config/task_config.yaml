@@ -1,5 +1,5 @@
 random_seed:
-  value: true
+  value: 27
   description: "Seed for random value"
 
 lr:
@@ -13,3 +13,7 @@ n_hidden_dim:
 epochs:
   value: 200
   description: "Total number of epochs"
+
+display_intervals:
+  value: 10
+  description: "Display training result at every x epoch"
