@@ -32,7 +32,7 @@ class CoraNodeClassification:
         setattr(self.config, 'n_class', labels.max().item() + 1)
 
         self.model = GCN(self.config)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=self.config.lr)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=self.config.lr,  weight_decay=self.config.l2_norm)
 
         for epoch in range(1, self.config.epochs+1):
             loss_train, acc_train = self.train(features, adj, labels, idx_train)
