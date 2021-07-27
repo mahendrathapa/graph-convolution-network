@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import torch
 from loguru import logger
@@ -32,13 +34,21 @@ def load_cora_data(data_path):
     features = normalize_features(features)
     adj = normalize_adj(adj + np.eye(adj.shape[0]))
 
-    idx_train = range(140)
-    idx_val = range(200, 500)
-    idx_test = range(500, 1500)
-
     features = torch.FloatTensor(features)
     labels = torch.LongTensor(np.where(labels)[1])
     adj = torch.FloatTensor(adj)
+
+    val_data_rate = 0.4
+    test_data_rate = 0.4
+
+    len_data = len(labels)
+    len_val = math.ceil(len_data * val_data_rate)
+    len_test = math.ceil(len_data * test_data_rate)
+    len_train = len_data - len_val - len_test
+
+    idx_train = range(0, len_train)
+    idx_val = range(len_train, len_train + len_val)
+    idx_test = range(len_train + len_val, len_data)
 
     idx_train = torch.LongTensor(idx_train)
     idx_val = torch.LongTensor(idx_val)
